@@ -28,16 +28,16 @@ window.addEventListener('load', () => {
         baseUrl = `${baseUrl}/`;
     }
 
-    manifest['start_url'] = `${baseUrl}index.html`;
+    // manifest['start_url'] = `${baseUrl}index.html`;
 
-    manifest.icons.forEach(icon => {
-        icon.src = `${baseUrl}${icon.src}`;
-    });
+    // manifest.icons.forEach(icon => {
+    //     icon.src = `${baseUrl}${icon.src}`;
+    // });
 
-    const stringManifest = JSON.stringify(manifest);
-    const blob = new Blob([stringManifest], {type: 'application/json'});
-    const manifestURL = URL.createObjectURL(blob);
-    document.querySelector('#manifestPlaceholder').setAttribute('href', manifestURL);
+    // const stringManifest = JSON.stringify(manifest);
+    // const blob = new Blob([stringManifest], {type: 'application/json'});
+    // const manifestURL = URL.createObjectURL(blob);
+    // document.querySelector('#manifestPlaceholder').setAttribute('href', manifestURL);
 
     // Service worker stuff
     if ('serviceWorker' in navigator) {
