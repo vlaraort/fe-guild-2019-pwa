@@ -1,4 +1,10 @@
 importScripts('https://storage.googleapis.com/workbox-cdn/releases/3.5.0/workbox-sw.js');
+importScripts('https://storage.googleapis.com/workbox-cdn/releases/3.5.0/workbox-sw.js');
+importScripts('src/lib/idb.js');
+importScripts('src/js/utility.js');
+
+// const SERVER_URL = '192.168.43.209:3000';
+// const API_URL = `${SERVER_URL}/selfies`;
 
 if (workbox) {
   console.log(`Yay! Workbox is loaded 🎉`);
@@ -10,7 +16,7 @@ if (workbox) {
   },
   {
     "url": "index.html",
-    "revision": "ce550c51e4f2529a9bbde21f2d7bb8da"
+    "revision": "ab1dacd85c41d813b60193738e2f75d0"
   },
   {
     "url": "manifest.json",
@@ -26,7 +32,7 @@ if (workbox) {
   },
   {
     "url": "src/css/feed.css",
-    "revision": "9f8dd3dcefb55f2e47f485c20d5b1041"
+    "revision": "d0c8b70a27491e9816bc3a3bb22bf0c8"
   },
   {
     "url": "src/css/help.css",
@@ -38,7 +44,15 @@ if (workbox) {
   },
   {
     "url": "src/js/feed.js",
-    "revision": "5af871f034d6f0c6c79903d636e02e74"
+    "revision": "c17a405e25db1f8d92fd8611895c32e1"
+  },
+  {
+    "url": "src/js/utility.js",
+    "revision": "e51db7928279b65ad0a1dce88d6f14aa"
+  },
+  {
+    "url": "src/lib/idb.js",
+    "revision": "df86cb9670d34344807711b1c7a86395"
   },
   {
     "url": "src/lib/material.indigo-deep_orange.min.css",
@@ -207,3 +221,49 @@ workbox.routing.registerRoute(
             });
     }
 );
+
+workbox.routing.registerRoute(API_URL, args => {
+  return fetch(args.event.request)
+      .then(response => {
+          const clonedResponse = response.clone();
+          clearAllData('selfies')
+              .then(() => clonedResponse.json())
+              .then(selfies => {
+                  for (const selfie in selfies) {
+                      writeData('selfies', selfies[selfie])
+                  }
+              });
+          return response;
+      });
+});
+
+self.addEventListener('sync', event => {
+  console.log('[Service Worker] Background syncing', event);
+  if (event.tag === 'sync-new-selfies') {
+      console.log('[Service Worker] Syncing new Posts');
+      event.waitUntil(
+          readAllData('sync-selfies')
+              .then(syncSelfies => {
+                  for (const syncSelfie of syncSelfies) {
+                      const postData = new FormData();
+                      postData.append('id', syncSelfie.id);
+                      postData.append('title', syncSelfie.title);
+                      postData.append('location', syncSelfie.location);
+                      postData.append('selfie', syncSelfie.selfie);
+
+                      fetch(API_URL, {method: 'POST', body: postData})
+                          .then(response => {
+                              console.log('Sent data', response);
+                              if (response.ok) {
+                                  response.json()
+                                      .then(resData => {
+                                          deleteItemFromData('sync-selfies', parseInt(resData.id));
+                                      });
+                              }
+                          })
+                          .catch(error => console.log('Error while sending data', error));
+                  }
+              })
+      );
+  }
+});

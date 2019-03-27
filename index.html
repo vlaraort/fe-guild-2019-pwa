@@ -16,7 +16,7 @@
     <link rel="stylesheet" href="src/lib/material.indigo-deep_orange.min.css" />
     <link rel="stylesheet" href="src/css/app.css">
     <link rel="stylesheet" href="src/css/feed.css">
-    
+
     <!-- <link rel="manifest" href="manifest.json"> -->
     <link rel="manifest" id="manifestPlaceholder">
     <!-- splash screen iOS -->
@@ -62,6 +62,7 @@
     <link href="src/images/splashscreens/ipadpro2_splash.png"
         media="(device-width: 1024px) and (device-height: 1366px) and (-webkit-device-pixel-ratio: 2)"
         rel="apple-touch-startup-image" />
+    <script defer src="src/lib/material.min.js"></script>
 </head>
 
 <body>
@@ -102,6 +103,15 @@
             </div>
             <main class="mdl-layout__content mat-typography">
                 <div id="create-post">
+                    <video id="player" autoplay></video>
+                    <canvas id="canvas" width="320px" height="240px"></canvas>
+                    <button id="capture-btn" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">
+                        Capture
+                    </button>
+                    <div id="pick-image">
+                        <h6>Pick an Image instead</h6>
+                        <input type="file" accept="image/*" id="image-picker">
+                    </div>
                     <form>
                         <div class="input-section mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                             <input class="mdl-textfield__input" type="text" id="title">
@@ -150,6 +160,8 @@
         </div>
     </div>
     <script defer src="src/lib/material.min.js"></script>
+    <script src="src/lib/idb.js"></script>
+    <script src="src/js/utility.js"></script>
     <script src="src/js/app.js"></script>
     <script src="src/js/feed.js"></script>
 </body>
