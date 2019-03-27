@@ -5,3 +5,24 @@
 .drawer-option {
   padding: 16px;
 }
+
+/* disable text selection */
+@media all and (display-mode: standalone) {
+  body {
+     -webkit-user-select: none;
+  }
+}
+
+/* disable highlighting */
+@media all and (display-mode: standalone) {
+  body {
+     -webkit-tap-highlight-color: transparent;
+  }
+}
+
+/* disable callouts */
+@media all and (display-mode: standalone) {
+  body {
+     -webkit-touch-callout: none;
+  }
+}
