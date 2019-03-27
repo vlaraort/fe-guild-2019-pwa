@@ -51,4 +51,10 @@ window.addEventListener('load', () => {
             console.log('ServiceWorker registration failed: ', err);
         });
     }
+
+    // Prevent banner to reappear
+    window.addEventListener('beforeinstallprompt', event => {
+      event.preventDefault();
+      return false;
+  });
 });
